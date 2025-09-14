@@ -8,8 +8,8 @@ import QuickRecipes from "./QuickRecipes";
 
 export function Main({ useAI }) {
   const [ingredients, setIngredients] = useState([]);
-  const [recipe, setRecipe] = useState(""); // AI / MealDB recipes
-  const [quickRecipe, setQuickRecipe] = useState(null); // Quick Recipes
+  const [recipe, setRecipe] = useState("");             // AI / MealDB recipes
+  const [quickRecipe, setQuickRecipe] = useState(null); // Quick recipe selection
   const [mood, setMood] = useState("");
   const [time, setTime] = useState("");
   const [allMeals, setAllMeals] = useState([]);
@@ -24,16 +24,29 @@ export function Main({ useAI }) {
     }
   }, [recipe, quickRecipe]);
 
+  // Add ingredient handler
+  function addIngredient(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const newIngredient = formData.get("ingredient")?.trim();
+    if (!newIngredient || !/^[A-Za-z\s]+$/.test(newIngredient)) {
+      alert("Please enter a valid ingredient (letters only).");
+      return;
+    }
+    setIngredients(prev => [...prev, newIngredient]);
+    event.target.reset();
+  }
+
+  function removeIngredient(indexToRemove) {
+    setIngredients(prev => prev.filter((_, index) => index !== indexToRemove));
+  }
+
+  // Fetch recipe from AI or MealDB
   async function getRecipe() {
-    setQuickRecipe(null); // clear quick recipe when fetching AI/MealDB
     if (useAI) {
       setLoading(true);
       try {
-        const recipeMarkdown = await getRecipeFromMistral(
-          ingredients,
-          mood,
-          time
-        );
+        const recipeMarkdown = await getRecipeFromMistral(ingredients, mood, time);
         setRecipe(recipeMarkdown);
       } catch (err) {
         console.error(err);
@@ -42,9 +55,7 @@ export function Main({ useAI }) {
         setLoading(false);
       }
     } else {
-      const ingredientQuery = ingredients
-        .map((ing) => `i=${encodeURIComponent(ing)}`)
-        .join("&");
+      const ingredientQuery = ingredients.map(i => `i=${encodeURIComponent(i)}`).join("&");
       const url = `https://www.themealdb.com/api/json/v1/1/filter.php?${ingredientQuery}`;
 
       setLoading(true);
@@ -78,8 +89,7 @@ export function Main({ useAI }) {
   async function changeMeal(direction) {
     if (!allMeals.length) return;
 
-    const newIndex =
-      (currentMealIndex + direction + allMeals.length) % allMeals.length;
+    const newIndex = (currentMealIndex + direction + allMeals.length) % allMeals.length;
     setCurrentMealIndex(newIndex);
 
     const meal = allMeals[newIndex];
@@ -100,38 +110,22 @@ export function Main({ useAI }) {
     }
   }
 
-  function addIngredient(formData) {
-    const newIngredient = formData.get("ingredient").trim();
-    const isValid = /^[A-Za-z\s]+$/.test(newIngredient);
-    if (!newIngredient || !isValid) {
-      alert(
-        "Please enter a valid ingredient (letters only, no numbers or symbols)."
-      );
-      return;
-    }
-    setIngredients((prev) => [...prev, newIngredient]);
-  }
-
-  function removeIngredient(indexToRemove) {
-    setIngredients((prev) =>
-      prev.filter((_, index) => index !== indexToRemove)
-    );
-  }
-
   return (
     <main>
-      <form action={addIngredient} className="add-ingredient-form">
+      {/* Ingredients Form */}
+      <form onSubmit={addIngredient} className="add-ingredient-form">
         <input
           type="text"
-          placeholder="What’s in your fridge? (e.g. tomatoes, eggs)"
+          placeholder="e.g. oregano"
           aria-label="Add ingredient"
           name="ingredient"
         />
-        <button>Add Ingredient</button>
+        <button type="submit">Add ingredient</button>
       </form>
 
-      <h2>Add Ingredients To Get Recipe</h2>
+      <h2>Add Ingredients</h2>
 
+      {/* Mood / Time Options */}
       {useAI && (
         <div className="extra-options">
           <label>
@@ -157,6 +151,7 @@ export function Main({ useAI }) {
         </div>
       )}
 
+      {/* Ingredients List */}
       {ingredients.length > 0 && (
         <IngredientsList
           innerRef={recipeSection}
@@ -166,52 +161,38 @@ export function Main({ useAI }) {
         />
       )}
 
-      {/* ✅ Show loading spinner or message */}
+      {/* Loading Message */}
       {loading && (
-        <p
-          className="loading-message"
-          style={{ textAlign: "center", marginTop: "1rem" }}
-        >
+        <p className="loading-message" style={{ textAlign: "center", marginTop: "1rem" }}>
           ⏳ Fetching recipe...
         </p>
       )}
 
-      {/* ✅ AI Recipe */}
+      {/* AI / MealDB Recipes */}
       {!loading && recipe && useAI && <AIRecipe recipe={recipe} />}
+      {!loading && recipe && !useAI && typeof recipe === "object" && recipe.strMeal && (
+        <>
+          <MealRecipe meal={recipe} innerRef={recipeSection} />
+          <MealNavigation
+            allMeals={allMeals}
+            currentMealIndex={currentMealIndex}
+            changeMeal={changeMeal}
+          />
+        </>
+      )}
 
-      {/* ✅ MealDB Recipe */}
-      {!loading &&
-        recipe &&
-        !useAI &&
-        typeof recipe === "object" &&
-        recipe.strMeal && (
-          <>
-            <MealRecipe meal={recipe} innerRef={recipeSection} />
-            <MealNavigation
-              allMeals={allMeals}
-              currentMealIndex={currentMealIndex}
-              changeMeal={changeMeal}
-            />
-          </>
-        )}
-
-      {/* ✅ Quick Recipe */}
+      {/* Quick Recipes Section */}
+      <QuickRecipes onSelect={(selectedRecipe) => setQuickRecipe(selectedRecipe)} />
       {!loading && quickRecipe && (
         <MealRecipe
           meal={{
-            strMeal: quickRecipe.name,
-            strMealThumb: quickRecipe.image,
-            strInstructions: quickRecipe.recipe,
+            strMeal: quickRecipe.strMeal,
+            strMealThumb: quickRecipe.strMealThumb,
+            strInstructions: quickRecipe.strInstructions
           }}
           innerRef={recipeSection}
         />
       )}
-
-      {/* ✅ Quick Recipes List */}
-      <QuickRecipes onSelect={(recipeObj) => {
-        setRecipe(""); // clear AI/MealDB
-        setQuickRecipe(recipeObj); // set only Quick Recipe
-      }} />
     </main>
   );
 }
