@@ -424,6 +424,21 @@ main {
   background: #d7263d;
 }
 
+.get-recipe-button {
+  border-radius: 8px;
+  border: none;
+  background: #f85f73;
+  color: white;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.get-recipe-container > button:hover {
+  background: #d7263d;
+}
+
 /* === Recipe Container === */
 .suggested-recipe-container {
   margin-top: 20px;
@@ -543,7 +558,7 @@ main {
 }
 
 /* ========== Mobile Responsiveness ========== */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .app-header {
     flex-direction: row;
     height: auto;
