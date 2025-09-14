@@ -541,3 +541,72 @@ main {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ========== Mobile Responsiveness ========== */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: row;
+    height: auto;
+    padding: 10px 15px;
+  }
+
+  .logo-title {
+    gap: 6px;
+  }
+
+  .app-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .app-title {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+
+  .toggle-container {
+    position: static;
+    margin-left: auto;
+  }
+
+  main {
+    padding: 15px;
+  }
+
+  .add-ingredient-form {
+    flex-direction: column;
+    height: auto;
+    gap: 10px;
+  }
+
+  .add-ingredient-form > input,
+  .add-ingredient-form > button {
+    width: 100%;
+    max-width: none;
+  }
+
+  .extra-options {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .get-recipe-container {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .suggested-recipe-container {
+    padding: 15px;
+  }
+
+  .meal-navigation {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .quick-recipes-grid {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.8rem;
+  }
+}
