@@ -3,7 +3,7 @@ import React from "react";
 export function MealRecipe({ meal, innerRef }) {
   if (!meal) return null;
 
-  // ✅ Support both API data and custom dataset
+
   const title = meal.strMeal || meal.name;
   const image = meal.strMealThumb || meal.image;
   const instructions = meal.strInstructions || meal.recipe;
@@ -12,7 +12,7 @@ export function MealRecipe({ meal, innerRef }) {
     <section ref={innerRef} className="meal-recipe">
       <h2>{title}</h2>
 
-      {/* Image */}
+    
       {image && (
         <img
           src={image}
@@ -21,14 +21,14 @@ export function MealRecipe({ meal, innerRef }) {
         />
       )}
 
-      {/* Instructions */}
+     
       {instructions ? (
         <p style={{ whiteSpace: "pre-line" }}>{instructions}</p>
       ) : (
         <p>No instructions available for this recipe.</p>
       )}
 
-      {/* Optional YouTube link (for API recipes only) */}
+    
       {meal.strYoutube && (
         <p>
           <a href={meal.strYoutube} target="_blank" rel="noopener noreferrer">
