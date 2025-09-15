@@ -625,3 +625,84 @@ main {
     gap: 0.8rem;
   }
 }
+
+
+/* QuickRecipes modal & layout helpers */
+
+/* overlay that dims page */
+.quickrecipes-modal-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1080; /* above other content */
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 1rem;
+}
+
+/* centered modal box */
+.quickrecipes-modal {
+  width: 100%;
+  max-width: 900px;
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+/* header style */
+.modal-header-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background-color: #ff7043;
+  color: #fff;
+}
+
+/* body style */
+.modal-body-custom {
+  padding: 1.25rem;
+  text-align: center;
+}
+
+/* instructions boxed area */
+.instructions-box {
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: left;
+  padding: 0.75rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+
+/* Quick recipe card hover */
+.quick-recipe-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  border: 1px solid #f0f0f0;
+}
+.quick-recipe-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* ensure 4 cards per row on large screens (Bootstrap grid handles layout),
+   this makes the inner card centered and consistent */
+@media (min-width: 992px) {
+  .col-lg-3 .quick-recipe-card {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* small screens adjustments */
+@media (max-width: 576px) {
+  .quick-recipe-card {
+    width: 100% !important;
+  }
+  .quickrecipes-modal {
+    max-width: 720px;
+  }
+}
