@@ -115,7 +115,7 @@ export function Main({ useAI }) {
       <form onSubmit={addIngredient} className="add-ingredient-form">
         <input
           type="text"
-          placeholder="Enter Ingridients you have one by one"
+          placeholder="Enter ingredients you have one by one"
           aria-label="Add ingredient"
           name="ingredient"
         />
