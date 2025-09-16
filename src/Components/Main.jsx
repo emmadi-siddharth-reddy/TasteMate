@@ -8,8 +8,8 @@ import QuickRecipes from "./QuickRecipes";
 
 export function Main({ useAI }) {
   const [ingredients, setIngredients] = useState([]);
-  const [recipe, setRecipe] = useState("");             // AI / MealDB recipes
-  const [quickRecipe, setQuickRecipe] = useState(null); // Quick recipe selection
+  const [recipe, setRecipe] = useState("");             
+  const [quickRecipe, setQuickRecipe] = useState(null);
   const [mood, setMood] = useState("");
   const [time, setTime] = useState("");
   const [allMeals, setAllMeals] = useState([]);
@@ -112,11 +112,10 @@ export function Main({ useAI }) {
 
   return (
     <main>
-      {/* Ingredients Form */}
       <form onSubmit={addIngredient} className="add-ingredient-form">
         <input
           type="text"
-          placeholder="e.g. oregano"
+          placeholder="Enter Ingridients you have one by one"
           aria-label="Add ingredient"
           name="ingredient"
         />
@@ -125,7 +124,6 @@ export function Main({ useAI }) {
 
       <h2>Add Ingredients</h2>
 
-      {/* Mood / Time Options */}
       {useAI && (
         <div className="extra-options">
           <label>
@@ -151,7 +149,6 @@ export function Main({ useAI }) {
         </div>
       )}
 
-      {/* Ingredients List */}
       {ingredients.length > 0 && (
         <IngredientsList
           innerRef={recipeSection}
@@ -161,7 +158,6 @@ export function Main({ useAI }) {
         />
       )}
 
-      {/* Loading Message */}
       {loading && (
         <p className="loading-message" style={{ textAlign: "center", marginTop: "1rem" }}>
           ⏳ Fetching recipe...
